@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Task index{% endblock %}
+
+{% block body %}
+    <turbo-frame id="add-task-form">
+        {{ form_start(form, {'action': '/tasks/create', 'method': 'POST'}) }}
+            {{ form_widget(form._token) }}
+            {{ form_errors(form) }}
+            <div class="flex items-center border-b-2 border-teal-500 p-2">
+                <input
+                        name="{{ field_name(form.title) }}"
+                        value="{{ field_value(form.title) }}"
+                        class="appearance-none bg-transparent border-none w-full text-gray-700 mr-3 py-1 px-2 leading-tight focus:outline-none"
+                        type="text" placeholder="Add a task" required/>
+                <button type="submit"
+                        class="flex-shrink-0 bg-teal-500 hover:bg-teal-700 border-teal-500 hover:border-teal-700 text-sm border-4 text-white py-1 px-2 rounded">
+                    Add
+                </button>
+            </div>
+        {{ form_end(form, {'render_rest': false}) }}
+    </turbo-frame>
+
+    <turbo-frame id="tasks">
+        <ul class="divide-y divide-gray-200 px-4">
+            {% for task in tasks %}
+                {% include 'task/_task.html.twig' with {'task': task} %}
+            {% else %}
+                <li class="py-4">
+                    <div class="flex items-center">
+                        <label for="todo1" class="ml-3 block text-gray-900">
+                            <span class="text-sm font-light text-gray-500">Nothing to do</span>
+                        </label>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+    </turbo-frame>
+{% endblock %}

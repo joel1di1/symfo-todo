@@ -8,7 +8,6 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\UX\Turbo\Attribute\Broadcast;
 
 #[ORM\Entity(repositoryClass: TaskRepository::class)]
-#[Broadcast]
 class Task
 {
     #[ORM\Id]
@@ -79,5 +78,27 @@ class Task
         $this->status = $status;
 
         return $this;
+    }
+
+    public function setCompleted(): static
+    {
+        $this->status = 'complete';
+        return $this;
+    }
+
+    public function completed(): bool
+    {
+        return $this->status === 'complete';
+    }
+
+    public function setUncompleted(): static
+    {
+        $this->status = 'incomplete';
+        return $this;
+    }
+
+    public function uncompleted(): bool
+    {
+        return $this->status !== 'complete';
     }
 }
