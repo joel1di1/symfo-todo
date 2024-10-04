@@ -1,28 +1,30 @@
 <li id="task_{{ task.id }}" class="py-4">
-    <div class="flex items-center">
-        <form action="{{ path('app_task_complete', {'id': task.id, 'action': task.completed ? 'uncomplete' : 'complete'}) }}" method="POST">
-            <button type="submit"
-                class="peer h-5 w-5 cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border border-slate-300">
-                {% if task.completed %}
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414L8.414 15l-4.707-4.707a1 1 0 011.414-1.414L8.414 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
-                    </svg>
-                {% endif %}
-            </button>
-        </form>
+	<div class="flex items-center">
+		<form action="{{ path('app_task_complete', {'id': task.id, 'action': task.completed ? 'uncomplete' : 'complete'}) }}" method="POST">
+			<button type="submit" class="peer h-5 w-5 cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border border-slate-300">
+				{% if task.completed %}
+					<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewbox="0 0 20 20" fill="currentColor">
+						<path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414L8.414 15l-4.707-4.707a1 1 0 011.414-1.414L8.414 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+					</svg>
+				{% endif %}
+			</button>
+		</form>
 
-        <label for="todo1" class="ml-3 block text-gray-900 flex justify-between w-full">
-            <span class=" block text-lg font-medium">{{ task.title }}</span>
-            <span class="block  text-sm font-light text-gray-500">{{ task.dueDate|date("Y-m-d") }}</span>
-        </label>
+		<label for="todo1" class="ml-3 block text-gray-900 flex justify-between w-full">
+			<a href="{{ path('app_task_edit', {'id': task.id}) }}" class="flex-1 block text-lg font-medium" data-turbo-frame="body">
+				{{ task.title }}
+			</a>
+			<span class="block  text-sm font-light text-gray-500">{{ task.dueDate|date("Y-m-d") }}</span>
+		</label>
 
-        <form action="{{ path('app_task_delete', {'id': task.id}) }}" method="POST">
-            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ task.id) }}">
-            {# button as trash svg #}
-            <button class="text-gray-500 hover:text-red-500" type="submit">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20px" fill="currentColor">
-                  <path d="M0 0h24v24H0V0z" fill="none"/><path d="M14.12 10.47L12 12.59l-2.13-2.12-1.41 1.41L10.59 14l-2.12 2.12 1.41 1.41L12 15.41l2.12 2.12 1.41-1.41L13.41 14l2.12-2.12zM15.5 4l-1-1h-5l-1 1H5v2h14V4zM6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM8 9h8v10H8V9z"/></svg>
-            </button>
-        </form>
-    </div>
+		<form action="{{ path('app_task_delete', {'id': task.id}) }}" method="POST">
+			<input
+			type="hidden" name="_token" value="{{ csrf_token('delete' ~ task.id) }}">
+			{# button as trash svg #}
+			<button class="text-gray-500 hover:text-red-500" type="submit">
+				<svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 24 24" width="20px" fill="currentColor">
+					<path d="M0 0h24v24H0V0z" fill="none"/><path d="M14.12 10.47L12 12.59l-2.13-2.12-1.41 1.41L10.59 14l-2.12 2.12 1.41 1.41L12 15.41l2.12 2.12 1.41-1.41L13.41 14l2.12-2.12zM15.5 4l-1-1h-5l-1 1H5v2h14V4zM6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM8 9h8v10H8V9z"/></svg>
+			</button>
+		</form>
+	</div>
 </li>

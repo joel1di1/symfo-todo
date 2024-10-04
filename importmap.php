@@ -25,4 +25,7 @@ return [
     '@hotwired/turbo' => [
         'version' => '7.3.0',
     ],
+    'tailwindcss-stimulus-components' => [
+        'version' => '6.0.2',
+    ],
 ];

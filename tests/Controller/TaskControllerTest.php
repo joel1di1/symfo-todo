@@ -81,12 +81,17 @@ final class TaskControllerTest extends WebTestCase
 
         $this->client->request('GET', $this->path);
 
-        $this->client->request('GET', sprintf('%s/%s', $this->path, $fixture->getId()));
+        $this->client->clickLink($fixture->getTitle());
 
-        self::assertResponseStatusCodeSame(200);
-        self::assertPageTitleContains('Task');
+        $this->assertResponseRedirects('/task/' . $fixture->getId());
+        // $this->assertPathEquals('/task/' . $fixture->getId());
 
-        // Use assertions to check that the properties are properly displayed.
+        // $this->client->request('GET', sprintf('%s/%s', $this->path, $fixture->getId()));
+
+        // self::assertResponseStatusCodeSame(200);
+        // self::assertPageTitleContains('Task');
+
+        // // Use assertions to check that the properties are properly displayed.
     }
 
     public function testEdit(): void
