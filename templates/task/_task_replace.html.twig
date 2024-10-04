@@ -1,7 +1,5 @@
-{% block success_stream %}
 <turbo-stream action="replace" targets="#task_{{ task.id }}">
   <template>
     {% include 'task/_task.html.twig' with {'task': task} %}
   </template>
 </turbo-stream>
-{% endblock %}
