@@ -7,19 +7,23 @@ use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Faker\Factory;
 
 final class TaskControllerTest extends WebTestCase
 {
     private KernelBrowser $client;
     private EntityManagerInterface $manager;
     private EntityRepository $repository;
-    private string $path = '/task/';
+    private string $path = '/tasks';
+    private \Faker\Generator $faker;
 
     protected function setUp(): void
     {
         $this->client = static::createClient();
+        $this->client->followRedirects();
         $this->manager = static::getContainer()->get('doctrine')->getManager();
         $this->repository = $this->manager->getRepository(Task::class);
+        $this->faker = Factory::create();
 
         foreach ($this->repository->findAll() as $object) {
             $this->manager->remove($object);
@@ -30,48 +34,54 @@ final class TaskControllerTest extends WebTestCase
 
     public function testIndex(): void
     {
-        $this->client->followRedirects();
+        // create a new task and persist it to the database
+        $task = new Task();
+        $task->setTitle($this->faker->sentence());
+        $task->setDescription($this->faker->paragraph());
+
+        $this->manager->persist($task);
+        $this->manager->flush();
+
         $crawler = $this->client->request('GET', $this->path);
 
         self::assertResponseStatusCodeSame(200);
-        self::assertPageTitleContains('Task index');
+        self::assertPageTitleContains('Todo List');
 
-        // Use the $crawler to perform additional assertions e.g.
-        // self::assertSame('Some text on the page', $crawler->filter('.p')->first());
+        // Use assertions to check that the task is properly displayed.
+        $this->assertSelectorTextContains('h1', 'To-Do List');
+        // assert that the task is displayed in the page css exemple: #tasks #task_1
+        $this->assertSelectorTextContains(sprintf("#task_%d", $task->getId()), $task->getTitle());
     }
 
-    public function testNew(): void
+    public function testNewFromList(): void
     {
-        $this->markTestIncomplete();
-        $this->client->request('GET', sprintf('%snew', $this->path));
-
+        $crawler = $this->client->request('GET', $this->path);
         self::assertResponseStatusCodeSame(200);
 
-        $this->client->submitForm('Save', [
-            'task[title]' => 'Testing',
-            'task[description]' => 'Testing',
-            'task[due_date]' => 'Testing',
-            'task[status]' => 'Testing',
+        $taskTitle = $this->faker->sentence();
+        $this->client->submitForm('Add', [
+            'task[title]' => $taskTitle,
         ]);
 
-        self::assertResponseRedirects($this->path);
-
         self::assertSame(1, $this->repository->count([]));
+        $taskDb = $this->repository->findAll()[0];
+        $this->assertSelectorTextContains(sprintf("#task_%d", $taskDb->getId()), $taskTitle);
+        $this->assertSame($taskTitle, $taskDb->getTitle());
     }
 
     public function testShow(): void
     {
-        $this->markTestIncomplete();
         $fixture = new Task();
-        $fixture->setTitle('My Title');
-        $fixture->setDescription('My Title');
-        $fixture->setDue_date('My Title');
-        $fixture->setStatus('My Title');
+        $fixture->setTitle($this->faker->sentence());
+        $fixture->setDescription($this->faker->paragraph());
+        $fixture->setStatus($this->faker->word());
 
         $this->manager->persist($fixture);
         $this->manager->flush();
 
-        $this->client->request('GET', sprintf('%s%s', $this->path, $fixture->getId()));
+        $this->client->request('GET', $this->path);
+
+        $this->client->request('GET', sprintf('%s/%s', $this->path, $fixture->getId()));
 
         self::assertResponseStatusCodeSame(200);
         self::assertPageTitleContains('Task');
@@ -83,10 +93,10 @@ final class TaskControllerTest extends WebTestCase
     {
         $this->markTestIncomplete();
         $fixture = new Task();
-        $fixture->setTitle('Value');
-        $fixture->setDescription('Value');
-        $fixture->setDue_date('Value');
-        $fixture->setStatus('Value');
+        $fixture->setTitle($this->faker->sentence());
+        $fixture->setDescription($this->faker->paragraph());
+        $fixture->setDue_date($this->faker->dateTime);
+        $fixture->setStatus($this->faker->word());
 
         $this->manager->persist($fixture);
         $this->manager->flush();
@@ -114,10 +124,10 @@ final class TaskControllerTest extends WebTestCase
     {
         $this->markTestIncomplete();
         $fixture = new Task();
-        $fixture->setTitle('Value');
-        $fixture->setDescription('Value');
-        $fixture->setDue_date('Value');
-        $fixture->setStatus('Value');
+        $fixture->setTitle($this->faker->sentence());
+        $fixture->setDescription($this->faker->paragraph());
+        $fixture->setDue_date($this->faker->dateTime);
+        $fixture->setStatus($this->faker->word());
 
         $this->manager->persist($fixture);
         $this->manager->flush();
