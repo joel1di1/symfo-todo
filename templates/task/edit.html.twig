@@ -1,16 +1,40 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Edit Task
-{% endblock %}
+{% block title %}Task {{ task.title }}{% endblock %}
 
 {% block body %}
-	<turbo-frame id="body">
+	<turbo-frame id="main">
+		{{ form_start(edit_task_form, {'attr': {'id': 'edit-task-form', 'class':'pt-8'}, 'action': path('app_task_edit', {'id': task.id}), 'method': 'POST'}) }}
 
-		<h1>Edit Task</h1>
+			{{ form_widget(edit_task_form._token) }}
+			{{ form_errors(edit_task_form) }}
 
-		<a href="{{ path('app_task_index') }}" data-turbo-frame="main">back to list</a>
-
-
+			<div class="w-full flex flex-col space-y-8">
+				<div class="w-full">
+					<label for="title" class="sr-only">Task title</label>
+					<textarea
+							name="{{ field_name(edit_task_form.title) }}"
+							class="block w-full min-h-4 text-gray-900 placeholder:text-gray-400 text-4xl outline-none whitespace-normal"
+							placeholder="Something to do"
+							required
+							autofocus
+					>{{ field_value(edit_task_form.title) }}</textarea>
+				</div>
+				<div class="w-full">
+					<label for="description" class="sr-only">Task description</label>
+					<textarea
+							name="{{ field_name(edit_task_form.description) }}"
+							class="block w-full min-h-4 text-gray-900 placeholder:text-gray-400 text-lg outline-none whitespace-normal"
+							placeholder="Description"
+					>{{ field_value(edit_task_form.description) }}</textarea>
+				<div class="">
+					<button type="submit" class="flex-shrink-0 bg-teal-500 hover:bg-teal-700 border-teal-500 hover:border-teal-700 text-sm border-4 text-white py-1 px-2 rounded">
+						Update
+					</button>
+				</div>
+				<a href="{{ path('app_task_index') }}" data-turbo-frame="main" data-turbo-action="restore">back to list</a>
+			</div>
+		{{ form_end(edit_task_form, {'render_rest': false}) }}
 	</turbo-frame>
 
 {% endblock %}

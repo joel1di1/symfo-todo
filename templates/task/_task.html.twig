@@ -11,7 +11,7 @@
 		</form>
 
 		<label for="todo1" class="mx-3 block text-gray-900 flex w-full">
-			<a href="{{ path('app_task_edit', {'id': task.id}) }}" class="flex-1 block text-lg font-medium" data-turbo-frame="main">
+			<a href="{{ path('app_task_edit', {'id': task.id}) }}" class="flex-1 block text-lg font-medium" data-turbo-frame="main" data-turbo-action="advance">
 				{{ task.title }}
 			</a>
 			<span class="block h-8 text-sm font-light text-gray-500">{{ task.dueDate|date("Y-m-d") }}</span>

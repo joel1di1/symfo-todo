@@ -13,7 +13,6 @@
 		</li>
 		{% for task in tasks %}
 			{% include 'task/_task.html.twig' with {'task': task} %}
-			{% else %}
 		{% endfor %}
 	</ul>
 {% endblock %}
