@@ -42,20 +42,20 @@ final class TaskControllerTest extends WebTestCase
         $this->manager->persist($task);
         $this->manager->flush();
 
-        $crawler = $this->client->request('GET', $this->path);
+        $this->client->request('GET', $this->path);
 
         self::assertResponseStatusCodeSame(200);
         self::assertPageTitleContains('Todo List');
 
         // Use assertions to check that the task is properly displayed.
-        $this->assertSelectorTextContains('h1', 'To-Do List');
+        $this->assertSelectorTextContains('p', 'Nothing else to do');
         // assert that the task is displayed in the page css exemple: #tasks #task_1
         $this->assertSelectorTextContains(sprintf("#task_%d", $task->getId()), $task->getTitle());
     }
 
     public function testNewFromList(): void
     {
-        $crawler = $this->client->request('GET', $this->path);
+        $this->client->request('GET', $this->path);
         self::assertResponseStatusCodeSame(200);
 
         $taskTitle = $this->faker->sentence();
@@ -83,64 +83,50 @@ final class TaskControllerTest extends WebTestCase
 
         $this->client->clickLink($fixture->getTitle());
 
-        $this->assertResponseRedirects('/task/' . $fixture->getId());
-        // $this->assertPathEquals('/task/' . $fixture->getId());
-
-        // $this->client->request('GET', sprintf('%s/%s', $this->path, $fixture->getId()));
-
-        // self::assertResponseStatusCodeSame(200);
-        // self::assertPageTitleContains('Task');
-
-        // // Use assertions to check that the properties are properly displayed.
+        $currentUrl = $this->client->getRequest()->getUri();
+        $this->assertStringEndsWith('/tasks/' . $fixture->getId() . '/edit', $currentUrl);
+        $this->assertSelectorTextContains('textarea[name="task[description]"]', $fixture->getDescription());
     }
 
     public function testEdit(): void
     {
-        $this->markTestIncomplete();
         $fixture = new Task();
         $fixture->setTitle($this->faker->sentence());
         $fixture->setDescription($this->faker->paragraph());
-        $fixture->setDue_date($this->faker->dateTime);
-        $fixture->setStatus($this->faker->word());
 
         $this->manager->persist($fixture);
         $this->manager->flush();
 
-        $this->client->request('GET', sprintf('%s%s/edit', $this->path, $fixture->getId()));
+        $this->client->request('GET', sprintf('%s/%s/edit', $this->path, $fixture->getId()));
+
+        $this->assertAnySelectorTextContains('textarea[name="task[description]"]', $fixture->getDescription());
 
         $this->client->submitForm('Update', [
             'task[title]' => 'Something New',
             'task[description]' => 'Something New',
-            'task[due_date]' => 'Something New',
-            'task[status]' => 'Something New',
         ]);
 
-        self::assertResponseRedirects('/task/');
+        $currentUrl = $this->client->getRequest()->getUri();
+        $this->assertStringEndsWith('/tasks', $currentUrl);
 
-        $fixture = $this->repository->findAll();
-
-        self::assertSame('Something New', $fixture[0]->getTitle());
-        self::assertSame('Something New', $fixture[0]->getDescription());
-        self::assertSame('Something New', $fixture[0]->getDue_date());
-        self::assertSame('Something New', $fixture[0]->getStatus());
+        $dbTask = $this->repository->findAll()[0];
+        self::assertSame('Something New', $dbTask->getTitle());
+        self::assertSame('Something New', $dbTask->getDescription());
     }
 
-    public function testRemove(): void
+    public function testRemoveFromInde(): void
     {
-        $this->markTestIncomplete();
         $fixture = new Task();
         $fixture->setTitle($this->faker->sentence());
-        $fixture->setDescription($this->faker->paragraph());
-        $fixture->setDue_date($this->faker->dateTime);
-        $fixture->setStatus($this->faker->word());
 
         $this->manager->persist($fixture);
         $this->manager->flush();
 
-        $this->client->request('GET', sprintf('%s%s', $this->path, $fixture->getId()));
-        $this->client->submitForm('Delete');
+        $crawler = $this->client->request('GET', $this->path);
 
-        self::assertResponseRedirects('/task/');
+        $form = $crawler->selectButton('Delete task ' . $fixture->getId())->form();
+        $this->client->submit($form);
+
         self::assertSame(0, $this->repository->count([]));
     }
 }
