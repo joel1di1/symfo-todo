@@ -1,0 +1,11 @@
+<turbo-stream action="prepend" target="tasklist">
+  <template>
+    {% include 'task/_task.html.twig' with {'task': task} %}
+  </template>
+</turbo-stream>
+
+<turbo-stream action="replace" target="new-task-form">
+    <template>
+        {% include 'task/_form.html.twig' with {'form': form} %}
+    </template>
+</turbo-stream>

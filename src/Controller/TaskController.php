@@ -39,7 +39,7 @@ final class TaskController extends AbstractController
 
         if (TurboBundle::STREAM_FORMAT === $request->getPreferredFormat()) {
             $request->setRequestFormat(TurboBundle::STREAM_FORMAT);
-            return $this->renderBlock('task/_task_replace.html.twig', 'success_stream', ['task' => $task]);
+            return $this->render('task/_task_replace.html.twig', ['task' => $task]);
         }
 
         return $this->redirectToRoute('app_task_index');
@@ -57,9 +57,8 @@ final class TaskController extends AbstractController
             $entityManager->flush();
 
             if (TurboBundle::STREAM_FORMAT === $request->getPreferredFormat()) {
-                // If the request comes from Turbo, set the content type as text/vnd.turbo-stream.html and only send the HTML to update
                 $request->setRequestFormat(TurboBundle::STREAM_FORMAT);
-                return $this->renderBlock('task/new.html.twig', 'success_stream', ['task' => $task]);
+                return $this->render('task/_task_create.html.twig', ['task' => $task, 'form' => $this->createForm(TaskType::class, new Task())]);
             }
 
             return $this->redirectToRoute('app_task_index', [], Response::HTTP_SEE_OTHER);
@@ -118,9 +117,14 @@ final class TaskController extends AbstractController
     #[Route('/{id}', name: 'app_task_delete', methods: ['POST'])]
     public function delete(Request $request, Task $task, EntityManagerInterface $entityManager): Response
     {
+        $id = $task->getId();
         if ($this->isCsrfTokenValid('delete' . $task->getId(), $request->getPayload()->getString('_token'))) {
             $entityManager->remove($task);
             $entityManager->flush();
+        }
+        if (TurboBundle::STREAM_FORMAT === $request->getPreferredFormat()) {
+            $request->setRequestFormat(TurboBundle::STREAM_FORMAT);
+            return $this->render('partials/_delete_element.html.twig', ['elementId' => "task_{$id}"]);
         }
 
         return $this->redirectToRoute('app_task_index', [], Response::HTTP_SEE_OTHER);

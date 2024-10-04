@@ -1,4 +1,15 @@
-{{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button class="btn">{{ button_label|default('Save') }}</button>
-{{ form_end(form) }}
+{{ form_start(form, {'attr': {'id': 'new-task-form'}, 'action': '/tasks/create', 'method': 'POST'}) }}
+    {{ form_widget(form._token) }}
+    {{ form_errors(form) }}
+    <div class="flex items-center border-b-2 border-teal-500 p-2">
+        <input
+                name="{{ field_name(form.title) }}"
+                value="{{ field_value(form.title) }}"
+                class="appearance-none bg-transparent border-none w-full text-gray-700 mr-3 py-1 px-2 leading-tight focus:outline-none"
+                type="text" placeholder="Add a task" required/>
+        <button type="submit"
+                class="flex-shrink-0 bg-teal-500 hover:bg-teal-700 border-teal-500 hover:border-teal-700 text-sm border-4 text-white py-1 px-2 rounded">
+            Add
+        </button>
+    </div>
+{{ form_end(form, {'render_rest': false}) }}
