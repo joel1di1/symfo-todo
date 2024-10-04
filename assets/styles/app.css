@@ -5,9 +5,3 @@
 ul#tasklist:has(li:not(.empty-message)) .empty-message {
   display: none;
 }
-
-/* Style the empty message when no tasks are present */
-.empty-message {
-  display: list-item;
-  /* Additional styling for the empty message */
-}

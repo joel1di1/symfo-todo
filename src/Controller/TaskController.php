@@ -19,11 +19,11 @@ final class TaskController extends AbstractController
     public function index(TaskRepository $taskRepository): Response
     {
         $task = new Task();
-        $form = $this->createForm(TaskType::class, $task);
+        $new_task_form = $this->createForm(TaskType::class, $task);
 
         return $this->render('task/index.html.twig', [
             'tasks' => $taskRepository->findAll(),
-            'form' => $form
+            'new_task_form' => $new_task_form
         ]);
     }
 
@@ -49,16 +49,16 @@ final class TaskController extends AbstractController
     public function create(Request $request, EntityManagerInterface $entityManager): Response
     {
         $task = new Task();
-        $form = $this->createForm(TaskType::class, $task);
-        $form->handleRequest($request);
+        $new_task_form = $this->createForm(TaskType::class, $task);
+        $new_task_form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
+        if ($new_task_form->isSubmitted() && $new_task_form->isValid()) {
             $entityManager->persist($task);
             $entityManager->flush();
 
             if (TurboBundle::STREAM_FORMAT === $request->getPreferredFormat()) {
                 $request->setRequestFormat(TurboBundle::STREAM_FORMAT);
-                return $this->render('task/_task_create.html.twig', ['task' => $task, 'form' => $this->createForm(TaskType::class, new Task())]);
+                return $this->render('task/_task_create.html.twig', ['task' => $task, 'new_task_form' => $this->createForm(TaskType::class, new Task())]);
             }
 
             return $this->redirectToRoute('app_task_index', [], Response::HTTP_SEE_OTHER);
@@ -72,10 +72,10 @@ final class TaskController extends AbstractController
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $task = new Task();
-        $form = $this->createForm(TaskType::class, $task);
-        $form->handleRequest($request);
+        $new_task_form = $this->createForm(TaskType::class, $task);
+        $new_task_form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
+        if ($new_task_form->isSubmitted() && $new_task_form->isValid()) {
             $entityManager->persist($task);
             $entityManager->flush();
 
@@ -84,7 +84,7 @@ final class TaskController extends AbstractController
 
         return $this->render('task/new.html.twig', [
             'task' => $task,
-            'form' => $form,
+            'new_task_form' => $new_task_form,
         ]);
     }
 
@@ -99,10 +99,10 @@ final class TaskController extends AbstractController
     #[Route('/{id}/edit', name: 'app_task_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Task $task, EntityManagerInterface $entityManager): Response
     {
-        $form = $this->createForm(TaskType::class, $task);
-        $form->handleRequest($request);
+        $new_task_form = $this->createForm(TaskType::class, $task);
+        $new_task_form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
+        if ($new_task_form->isSubmitted() && $new_task_form->isValid()) {
             $entityManager->flush();
 
             return $this->redirectToRoute('app_task_index', [], Response::HTTP_SEE_OTHER);
@@ -110,7 +110,7 @@ final class TaskController extends AbstractController
 
         return $this->render('task/edit.html.twig', [
             'task' => $task,
-            'form' => $form,
+            'new_task_form' => $new_task_form,
         ]);
     }
 

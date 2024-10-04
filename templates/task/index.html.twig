@@ -6,21 +6,14 @@
 
 
 {% block body %}
-	<turbo-frame id="body">
-
-		{% include 'task/_form.html.twig' with {'form': form} %}
-
-		<turbo-frame id="tasks">
-			<ul id="tasklist" class="divide-y divide-gray-200 px-4">
-				<li class="empty-message" class="py-4 w-full block text-gray-900 text-xl font-medium flex flex-col">
-					<p class="w-full text-center">Nothing else to do</p>
-					<p class="w-full text-center">💪😁</p>
-				</li>
-				{% for task in tasks %}
-					{% include 'task/_task.html.twig' with {'task': task} %}
-					{% else %}
-				{% endfor %}
-			</ul>
-		</turbo-frame>
-	</turbo-frame>
+	<ul id="tasklist" class="divide-y divide-gray-200 px-4">
+		<li class="empty-message" class="py-4 w-full block text-gray-900 text-xl font-medium flex flex-col">
+			<p class="w-full text-center">Nothing else to do</p>
+			<p class="w-full text-center">💪😁</p>
+		</li>
+		{% for task in tasks %}
+			{% include 'task/_task.html.twig' with {'task': task} %}
+			{% else %}
+		{% endfor %}
+	</ul>
 {% endblock %}
