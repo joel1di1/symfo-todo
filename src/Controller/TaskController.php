@@ -22,7 +22,7 @@ final class TaskController extends AbstractController
         $new_task_form = $this->createForm(TaskType::class, $task);
 
         return $this->render('task/index.html.twig', [
-            'tasks' => $taskRepository->findAll(),
+            'tasks' => $taskRepository->findAllNotCompleted(),
             'new_task_form' => $new_task_form
         ]);
     }

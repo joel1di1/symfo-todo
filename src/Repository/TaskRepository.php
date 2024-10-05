@@ -16,6 +16,17 @@ class TaskRepository extends ServiceEntityRepository
         parent::__construct($registry, Task::class);
     }
 
+    public function findAllNotCompleted(): array
+    {
+        return $this->createQueryBuilder('t')
+            ->andWhere('t.status != :status or t.status IS NULL')
+            ->setParameter('status', 'complete')
+            ->orderBy('t.due_date', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
     //    /**
     //     * @return Task[] Returns an array of Task objects
     //     */
