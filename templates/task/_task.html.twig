@@ -1,4 +1,4 @@
-<li id="task_{{ task.id }}" class="py-4">
+<li id="task_{{ task.id }}" class="py-4 {{ task.isOverdue ? 'bg-red-50' : '' }}">
 	<div class="flex items-center">
 		<form action="{{ path('app_task_complete', {'id': task.id, 'action': task.completed ? 'uncomplete' : 'complete'}) }}" method="POST">
 			<button type="submit" class="peer h-5 w-5 cursor-pointer transition-all appearance-none rounded shadow hover:shadow-md border border-slate-300">

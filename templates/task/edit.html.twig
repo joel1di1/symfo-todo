@@ -39,9 +39,9 @@
 						placeholder="Description">{{ field_value(edit_task_form.description) }}</textarea>
 				</div>
 				<div class="flex space-2">
-					<a href="{{ path('app_task_index') }}" class="py-1 px-2 hover:underline" data-turbo-frame="main" data-turbo-action="restore">back to list</a>
+					<a href="{{ path('app_task_index') }}" class="py-1 px-2 hover:underline" data-turbo-frame="main" data-turbo-action="advance">back to list</a>
 
-					<button type="submit" class="flex-shrink-0 bg-teal-500 hover:bg-teal-700 border-teal-500 hover:border-teal-700 text-sm border-4 text-white py-1 px-2 rounded">Update</button>
+					<button data-turbo-action="advance" type="submit" class="flex-shrink-0 bg-teal-500 hover:bg-teal-700 border-teal-500 hover:border-teal-700 text-sm border-4 text-white py-1 px-2 rounded">Update</button>
 				</div>
 			</div>
 		{{ form_end(edit_task_form, {'render_rest': false}) }}

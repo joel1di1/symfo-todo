@@ -27,6 +27,17 @@ class TaskRepository extends ServiceEntityRepository
         ;
     }
 
+    public function findAllToday(): array
+    {
+        return $this->createQueryBuilder('t')
+            ->andWhere('t.due_date <= :today')
+            ->setParameter('today', new \DateTime('today'))
+            ->orderBy('t.due_date', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
     //    /**
     //     * @return Task[] Returns an array of Task objects
     //     */

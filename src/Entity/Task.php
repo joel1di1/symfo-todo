@@ -101,4 +101,9 @@ class Task
     {
         return $this->status !== 'complete';
     }
+
+    public function isOverdue(): bool
+    {
+        return $this->due_date && $this->due_date < new \DateTime('today');
+    }
 }

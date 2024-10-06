@@ -27,6 +27,18 @@ final class TaskController extends AbstractController
         ]);
     }
 
+    #[Route('/today', name: 'app_task_today', methods: ['GET'])]
+    public function today(TaskRepository $taskRepository): Response
+    {
+        $task = new Task();
+        $new_task_form = $this->createForm(TaskType::class, $task);
+
+        return $this->render('task/index.html.twig', [
+            'tasks' => $taskRepository->findAllToday(),
+            'new_task_form' => $new_task_form
+        ]);
+    }
+
     #[Route('/{id}/{action}', name: 'app_task_complete', methods: ['POST'], requirements: ['action' => 'complete|uncomplete'])]
     public function completeTask(Request $request, Task $task, EntityManagerInterface $entityManager): Response
     {
