@@ -39,6 +39,18 @@ final class TaskController extends AbstractController
         ]);
     }
 
+    #[Route('/to-review', name: 'app_task_to_review', methods: ['GET'])]
+    public function toReview(TaskRepository $taskRepository): Response
+    {
+        $task = new Task();
+        $new_task_form = $this->createForm(TaskType::class, $task);
+
+        return $this->render('task/index.html.twig', [
+            'tasks' => $taskRepository->findAllToReview(),
+            'new_task_form' => $new_task_form
+        ]);
+    }
+
     #[Route('/{id}/{action}', name: 'app_task_complete', methods: ['POST'], requirements: ['action' => 'complete|uncomplete'])]
     public function completeTask(Request $request, Task $task, EntityManagerInterface $entityManager): Response
     {

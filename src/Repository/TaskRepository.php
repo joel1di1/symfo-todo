@@ -38,6 +38,18 @@ class TaskRepository extends ServiceEntityRepository
         ;
     }
 
+    public function findAllToReview(): array
+    {
+        return $this->createQueryBuilder('t')
+            ->andWhere('t.due_date IS NULL')
+            ->andWhere('t.status <> :status')
+            ->setParameter('status', 'complete')
+            ->orderBy('t.id', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
     //    /**
     //     * @return Task[] Returns an array of Task objects
     //     */
